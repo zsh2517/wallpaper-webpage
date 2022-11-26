@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- jquery China CDN -->
+    <script src="../assets/js/jquery-3.6.0.min.js"></script>
+    <script src="../assets/js/netStorage.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            user-select: none;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            font-family: monospace;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 40vw;
+            height: 40vh;
+
+            border: 5px solid #444;
+
+            border-radius: 10px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .time {
+            color: lightgray;
+            font-size: 6vw;
+            margin-top: 9vh;
+            font-weight: 900;
+        }
+
+        .date {
+            color: gray;
+            font-size: 2vw;
+            margin-top: 5vh;
+            font-weight: 700;
+        }
+
+        .timeout {
+            color: gray;
+            font-size: 1vw;
+            margin-top: 1vw;
+            font-weight: 700;
+        }
+
+        .day-percent-container {
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            background-color: #444;
+            height: 5px;
+        }
+        .day-percent {
+            background-color: #888;
+            height: 100%;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="time"></div>
+        <div class="date"></div>
+        <div class="timeout"></div>
+        <div class="day-percent-container">
+            <div class="day-percent"></div>
+        </div>
+    </div>
+
+
+</body>
+<script>
+    // time text style: 2022-01-01 11:22:33 with zero padding
+    const date2text = (datetime, type = 'full') => {
+        const year = datetime.getFullYear();
+        const month = datetime.getMonth() + 1;
+        const day = datetime.getDate();
+        const hour = datetime.getHours();
+        const minute = datetime.getMinutes();
+        const second = datetime.getSeconds();
+        const date = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+        const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:${second.toString().padStart(2, '0')}`;
+        if (type === 'full') {
+            return date + ' ' + time;
+        } else if (type === 'date') {
+            return date;
+        } else if (type === 'time') {
+            return time;
+        }
+    }
+    const setCntTime = () => {
+        const now = new Date();
+        const cntTime = date2text(now, 'time');
+        $('.time').text(cntTime);
+        const cntDate = date2text(now, 'date');
+        $('.date').text(cntDate);
+        const dayPercent = (now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds()) / 864;
+        $('.day-percent').css('width', dayPercent + '%');
+        const targetTime = new Date('2023-01-01 00:00:00');
+        const timeout = targetTime - now;
+        $('.timeout').text('距离元旦还有' + Math.floor(timeout / 1000 / 60 / 60 / 24) + '天');        
+    }
+    setInterval(setCntTime, 1000);
+</script>
+
+</html>
